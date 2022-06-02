@@ -20,7 +20,7 @@ class LoginTab extends Component {
 
     static navigationOptions = {
         title: 'Login',
-        tabBarIdon: ({tintColor}) => (
+        tabBarIcon: ({tintColor}) => (
             <Icon 
                 name='sign-in'
                 type='font-awesome'
@@ -139,13 +139,29 @@ class RegisterTab extends Component {
 
     static navigationOptions = {
         title: 'Register',
-        tabBarIdon: ({tintColor}) => (
+        tabBarIcon: ({tintColor}) => (
             <Icon 
                 name='user-plus'
                 type='font-awesome'
                 iconStyle={{color: tintColor}}
             />
         )
+    }
+
+    getImageFromCamera = async () => {
+        const cameraPermission = await Permissions.askAsync(Permissions.CAMERA);
+        const cameraRollPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+
+        if (cameraPermission.status === 'granted' && cameraRollPermission === 'granted') {
+            const capturedImage = await ImagePicker.launchCameraAsync({
+                allowsEditing: true,
+                aspect: [1, 1]
+            });
+            if (!capturedImage.cancelled) {
+                console.log(capturedImage);
+                this.setState({imageUrl: capturedImage.uri})
+            }
+        }
     }
 
     handleRegister() {
@@ -169,6 +185,17 @@ class RegisterTab extends Component {
         return (
             <ScrollView>
                 <View style={styles.container}>
+                    <View style={styles.imageContainer}>
+                        <Image  
+                            source={{uri: this.state.imageUrl}}
+                            loadingIndicatorSource={require('./images/logo.png')}
+                            style={styles.image}
+                        />
+                        <Button
+                            title="Camera"
+                            onPress={this.getImageFromCamera}
+                        />
+                    </View>
                     <Input 
                         placeholder="Username"
                         leftIcon={{type: 'font-awesome', name: 'user-o'}}
@@ -256,20 +283,33 @@ const Login = createBottomTabNavigator(
 const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
-        margin: 20
+        margin: 10
     },
     formIcon: {
         marginRight: 10
     },
     formInput: {
-        padding: 10
+        padding: 2
     },
     formCheckbox: {
-        margin: 10, 
+        margin: 8, 
         backgroundColor: null
     }, 
     formButton: {
-        margin: 40
+        margin: 10, 
+        marginLeft: 40, 
+        marginRight: 40
+    }, 
+    imageContainer: {
+        flex: 1, 
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-evenly', 
+        margin: 10
+    },
+    image: {
+        width: 60, 
+        height: 60
     }
 });
 
