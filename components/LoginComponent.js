@@ -133,7 +133,7 @@ class RegisterTab extends Component {
             lastname:'',
             email:'',
             remember: false,
-            imageUrl: baseUrl+ 'images/logo.png'
+            imageUrl: baseUrl + 'images/logo.png'
             }
     }
 
@@ -152,7 +152,7 @@ class RegisterTab extends Component {
         const cameraPermission = await Permissions.askAsync(Permissions.CAMERA);
         const cameraRollPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
 
-        if (cameraPermission.status === 'granted' && cameraRollPermission === 'granted') {
+        if (cameraPermission.status === 'granted' && cameraRollPermission.status === 'granted') {
             const capturedImage = await ImagePicker.launchCameraAsync({
                 allowsEditing: true,
                 aspect: [1, 1]
